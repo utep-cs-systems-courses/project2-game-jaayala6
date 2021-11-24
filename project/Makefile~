@@ -4,5 +4,4 @@ all:
 
 clean:
 	(cd timerLib && make clean)
-	(cd msp_toy && make clean)
 	rm -rf h lib
