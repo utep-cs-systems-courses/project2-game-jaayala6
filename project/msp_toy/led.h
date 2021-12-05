@@ -1,13 +1,15 @@
 #ifndef led_included
 #define led_included
 
-#define LED_RED BIT6               // P1.6 0000 0001
-#define LED_GREEN BIT0             // P1.0 0100 0001
-#define LEDS (BIT0 | BIT6)
+#define LED_RED BIT6
+#define LED_GREEN BIT0
+#define LEDS (BIT6 | BIT0)
 
-// these are boolean flags
-extern unsigned char led_changed, green_on, red_on;
+extern unsigned char red_on,green_on;
+extern unsigned char led_changed;
+
 void led_init();
 void led_update();
+void greenControl(int on);
 
-#endif // included
+#endif

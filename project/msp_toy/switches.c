@@ -4,9 +4,8 @@
 #include "buzzer.h"
 #include "stateMachines.h"
 
-char switch1_state,switch2_state,switch3_state,switch4_state;
-char switch_state_changed;
 switch_state = 0;
+char switch1_state_down,switch2_state_down,switch3_state_down,switch4_state_down, switch_state_changed;
 
 static char
 switch_update_interrupt_sense(){
@@ -29,18 +28,25 @@ void
 switch_interrupt_handler(){
   char p2val = switch_update_interrupt_sense();
 
-  switch1_state = (p2val & SW1) ? 0 : 1; //tells which button of the 4 were pressed
-  switch2_state = (p2val & SW2) ? 0 : 1;
-  switch3_state = (p2val & SW3) ? 0 : 1;
-  switch4_state = (p2val & SW4) ? 0 : 1;
+  switch1_state_down = (p2val & SW1) ? 0 : 1; //tells which button of the 4 were pressed
+  switch2_state_down = (p2val & SW2) ? 0 : 1;
+  switch3_state_down = (p2val & SW3) ? 0 : 1;
+  switch4_state_down = (p2val & SW4) ? 0 : 1;
 
-  if (switch1_state) //sets switch state to what was pressed
+  //10-switch-full-modular
+  if (switch1_state_down) {
     switch_state = 1;
-  if (switch2_state)
+  }
+  //7-blink-file-modular
+  if (switch2_state_down)
     switch_state = 2;
-  if (switch3_state)
+
+  //assy
+  if (switch3_state_down)
     switch_state = 3;
-  if (switch4_state)
+
+  //buzzer-song
+  if (switch4_state_down)
     switch_state = 4;
 
   switch_state_changed = 1; //make sure to show a button was pressed

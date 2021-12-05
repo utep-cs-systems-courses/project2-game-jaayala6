@@ -4,7 +4,7 @@
 
 unsigned char red_on = 0,green_on = 0;
 unsigned char led_changed = 0;
-char switch2_state,switch3_state;
+char switch1_state_down, switch3_state_down;
 char switch_state_changed;
 
 static char redVal[] = {0,LED_RED},greenVal[] = {0,LED_GREEN};
@@ -17,30 +17,35 @@ void led_init(){
 }
 
 void led_update(){
-  char ledFlags;
-
-  if (led_changed && switch_state == 1){
+  char ledFlags = 0;
+  
+  if (switch_state_changed && switch_state == 1){
+    ledFlags |= switch1_state_down ? LED_RED : 0; //green then when pressed switch to red
+    ledFlags |= switch1_state_down ? 0 : LED_GREEN;
+    
+    P1OUT &= (0xff - LEDS) | ledFlags;
+    P1OUT |= ledFlags;
+  }
+  
+  if (led_changed && switch_state == 2){
     ledFlags = greenVal[green_on] | redVal[red_on]; //first state for led state machine
     
-    P1OUT &= (0xff^LEDS) | ledFlags;
+    P1OUT &= (0xff - LEDS) | ledFlags;
     P1OUT |= ledFlags;
     led_changed = 0;
   }
 
-  if (switch_state_changed && switch_state == 2){
-    ledFlags |= switch2_state ? LED_GREEN : 0; //green then when pressed switch to red
-    ledFlags |= switch2_state ? 0 : LED_RED;
-    
-    P1OUT &= (0xff^LEDS) | ledFlags;
-    P1OUT |= ledFlags;
-  }
   
   if (switch_state_changed && switch_state == 3){
-    ledFlags |= switch3_state ? 0 : LED_GREEN; //red and when pressed goes off
+    /*
+    ledFlags |= switch3_state_down ? 0 : LED_GREEN; //red and when pressed goes off
 
     P1OUT &= (0xff^LEDS) | ledFlags;
     P1OUT |= ledFlags;
+    */
+    P1OUT |= LED_GREEN;
+    P1OUT |= LED_RED;
+
   }
   switch_state_changed = 0;
 }
-
